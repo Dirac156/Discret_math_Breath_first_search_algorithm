@@ -120,17 +120,26 @@ class Graph:
 # dunder method to override the iterable method. making it possible to easily loop through the graph
     def __iter__(self):
         return iter(self.vertList.values())
+    
+    def depthFirstSearch(self):
+        for aVertex in self:
+            aVertex.setColor('white')
+            aVertex.setPred(-1)
+        for aVertex in self:
+            if aVertex.getColor() == 'white':
+                self.dfs(aVertex)
 
 
 # recursive implementaion of depth first search
-    def depthFirstSearch(self,startVertex):
+    def dfs(self,startVertex):
         startVertex.setColor('gray')
         self.time += 1
         startVertex.setDiscovery(self.time)
+        print(f'vertex: {startVertex.getId()}')
         for nextVertex in startVertex.getConnections():
             if nextVertex.getColor() == 'white':
                 nextVertex.setPred(startVertex)
-                self.depthFirstSearch(nextVertex)
+                self.dfs(nextVertex)
         startVertex.setColor('black')
         self.time += 1
         startVertex.setFinish(self.time)
@@ -143,12 +152,14 @@ class Graph:
         vertQueue.enqueue(startVertex)
         while (vertQueue.size() > 0):
             currentVert = vertQueue.dequeue()
+            print(f'Vertex: {currentVert.id}')
             for nbr in currentVert.getConnections():
                 if (nbr.getColor() == 'white'):
                     nbr.setColor('gray')
                     nbr.setDistance(currentVert.getDistance() + 1)
                     nbr.setPred(currentVert)
                     vertQueue.enqueue(nbr)
+                    print(f'Veretx: {nbr.id}')
             currentVert.setColor('black')
 
 
@@ -181,12 +192,18 @@ ourGraph.addEdge(7,5,1)
 ourGraph.addEdge(8,2,1)
 
 # exploring the cedges of the vertices in our graph
+print('Graph edges')
 for vertex in ourGraph:
     for connection in vertex.getConnections():
-        print("( %s , %s )" % (vertex.getId(), connection.getId()))
+        print(connection)
 
 #breathFirstSearch search of our graph
+print('\n')
 startingVertex = ourGraph.getVertex(2)
-print(ourGraph.getVertices())
+print('breath first search')
+print('\n')
 ourGraph.breathFirstSearch(startingVertex)
-ourGraph.depthFirstSearch(startingVertex)
+print('\n')
+print('depth first search')
+print('\n')
+ourGraph.depthFirstSearch()
